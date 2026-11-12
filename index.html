@@ -32,9 +32,33 @@ button:disabled{opacity:.4}
 .opt.hot{background:#333;color:#fff}
 .opt .cd{display:block;font-size:10px;font-weight:700}
 #help{font-size:11px;color:#555;margin-top:8px;line-height:1.4}
+
+body{display:block}
+#layout{display:block;max-width:400px;margin:0 auto}
+#app{margin:0 auto}
+#rules{background:#f7f7f7;color:#222;padding:16px 20px;font-size:14px;line-height:1.55;border-radius:10px;margin:12px 8px}
+#rules h1{font-size:20px;margin:0 0 8px}
+#rules h2{font-size:17px;margin:22px 0 8px;border-bottom:1px solid #ccc;padding-bottom:4px}
+#rules h3{font-size:15px;margin:16px 0 6px}
+#rules table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+#rules th,#rules td{border:1px solid #ccc;padding:4px 6px;text-align:left;vertical-align:top}
+#rules th{background:#e8e8e8}
+#rules img{max-width:240px;width:100%;border:1px solid #bbb;border-radius:6px;margin:4px 6px 4px 0;vertical-align:top}
+#rules pre{background:#eaeaea;padding:8px;border-radius:6px;overflow-x:auto}
+#rules hr{border:0;border-top:1px solid #ddd;margin:16px 0}
+#rules blockquote{margin:8px 0;padding:4px 12px;border-left:3px solid #999;background:#eee}
+#torules{display:block;margin:10px auto 0;text-align:center;font-size:12px}
+@media (min-width:900px){
+  body{display:block}
+  #layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;max-width:1280px;margin:0 auto;height:100vh}
+  #rules{order:1;height:calc(100vh - 24px);overflow-y:auto;margin:12px 0;box-sizing:border-box}
+  #app{order:2;height:100vh;overflow-y:auto;box-sizing:border-box}
+  #torules,#help{display:none}
+}
 </style>
 </head>
 <body>
+<div id="layout">
 <div id="app">
   <div class="bar"><span>Aclamação <b id="acl">0</b> <small id="inc"></small></span><span><small id="dlbl"></small> Onda <b id="wv">1</b> · <span id="ph">Preparo</span></span></div>
   <div class="bar"><span>Seu cristal <b id="cryH">20</b></span><span>Cristal inimigo <b id="cryO">20</b></span></div>
@@ -82,6 +106,369 @@ button:disabled{opacity:.4}
     Fechar o caminho é permitido, mas o Juiz marca <b>Falta</b> no início da onda. Na onda, segure um botão e arraste até a opção (ou toque para abrir e toque na opção).
     Minotauro quebra estruturas. Herói: Aquiles · Patrono: Zeus.
   </div>
+<a id="torules" href="#rules">Ver regras completas ↓</a>
+</div>
+<aside id="rules">
+<h1>Jogos de Babel — regras do protótipo</h1>
+<h2>Objetivo</h2>
+<p>Cada lado tem um labirinto com um <strong>cristal</strong> no fim. Você defende o seu e manda unidades para destruir o do adversário. Quem zerar o cristal do outro primeiro vence. Os dois cristais começam com <strong>20 de vida</strong>.</p>
+<h2>Como uma partida funciona</h2>
+<p>A partida alterna duas fases até um cristal cair:</p>
+<ol>
+<li><strong>Preparo</strong> (sem tempo limite)<ul>
+<li>Monte ou redesenhe o seu labirinto.</li>
+<li>Escolha quais unidades vão para o ataque.</li>
+<li>Salve ou carregue um layout de labirinto.</li>
+</ul>
+</li>
+<li><strong>Onda</strong> (tempo real)<ul>
+<li>As unidades dos dois lados saem ao mesmo tempo, uma a cada 0,7 s por lado.</li>
+<li>Sua defesa funciona sozinha. Você interfere pelos três botões de habilidade.</li>
+<li>A onda acaba quando não sobra nenhuma unidade nos dois labirintos.</li>
+</ul>
+</li>
+</ol>
+<h3>Tela</h3>
+<ul>
+<li>Na onda, a câmera mostra o <strong>labirinto inimigo</strong> (onde estão as suas unidades).</li>
+<li>A <strong>mini-janela</strong> no canto mostra o outro labirinto. Toque nela para trocar a câmera.</li>
+<li>A mini-janela <strong>pisca em vermelho</strong> quando o seu cristal leva dano.</li>
+</ul>
+<p><img loading="lazy" alt="Onda em andamento, com o leque de Comandos aberto" src="img/4-onda-leque.png" /></p>
+<hr />
+<h2>O labirinto</h2>
+<p>O grid tem <strong>10 × 16 casas</strong>. As unidades entram pela linha de cima (cinza) e procuram sempre o <strong>caminho mais curto</strong> até o cristal. A linha de largada e a casa do cristal não aceitam construção.</p>
+<table>
+<thead>
+<tr>
+<th>Estrutura</th>
+<th>Vida</th>
+<th>Custo</th>
+<th>Observação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Muro</td>
+<td>40</td>
+<td>grátis</td>
+<td>Até 40 muros no labirinto</td>
+</tr>
+<tr>
+<td>Torre</td>
+<td>80</td>
+<td>40 de Aclamação</td>
+<td>Substitui a peça e passa a fazer parte do labirinto</td>
+</tr>
+<tr>
+<td>Muralha reforçada</td>
+<td>200</td>
+<td>30 de Aclamação</td>
+<td>Só faz diferença contra unidades que quebram estruturas</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>No preparo, <strong>Apagar</strong> devolve 100% do custo.</li>
+<li>Colocar torre ou muralha em cima de um muro troca a peça; o muro sai do limite.</li>
+<li><strong>Exemplo de labirinto em serpentina:</strong> quatro fileiras de muros com a passagem alternando entre os lados obrigam o inimigo a percorrer o mapa inteiro. As torres ficam nas fileiras, perto das curvas, e a muralha reforçada protege um ponto que o Minotauro ataca com frequência.</li>
+</ul>
+<p><img loading="lazy" alt="Labirinto em serpentina no preparo" src="img/1-preparo-serpentina.png" /></p>
+<h3>Torres</h3>
+<table>
+<thead>
+<tr>
+<th>Atributo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dano</td>
+<td>8 por tiro</td>
+</tr>
+<tr>
+<td>Cadência</td>
+<td>1 tiro a cada 0,6 s</td>
+</tr>
+<tr>
+<td>Alcance</td>
+<td>2,6 casas</td>
+</tr>
+<tr>
+<td>Alvo</td>
+<td>a unidade mais próxima do cristal</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>A Falta</h2>
+<p>Fechar o caminho é <strong>permitido</strong>, mas tem preço.</p>
+<ul>
+<li><strong>No preparo:</strong> se o caminho estiver fechado, as peças que o Juiz vai quebrar aparecem contornadas em vermelho.</li>
+<li><strong>No início da onda:</strong> o <strong>Juiz Divino</strong> quebra as peças que abrem o caminho com menos quebras. A escolha é sempre a mesma para o mesmo labirinto, sem sorte envolvida.</li>
+<li><strong>Punição:</strong> −25 de Aclamação por peça quebrada. As casas ficam <strong>interditadas</strong> (vermelho claro) durante o próximo preparo.</li>
+</ul>
+<p><img loading="lazy" alt="Aviso de caminho fechado" src="img/2-falta-preview.png" /> <img loading="lazy" alt="O Juiz marca falta" src="img/3-falta-juiz.png" /></p>
+<p><em>Na arquibancada: "Ih, o cara fechou tudo! Lá vem o Juiz... Falta! Atitude antiesportiva! A galera vaiou feio e ele perdeu a casa até a próxima rodada."</em></p>
+<hr />
+<h2>Unidades de ataque</h2>
+<table>
+<thead>
+<tr>
+<th>Unidade</th>
+<th>Vida</th>
+<th>Velocidade (casas/s)</th>
+<th>Custo</th>
+<th>Renda por envio</th>
+<th>Dano ao cristal</th>
+<th>Especial</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hoplita (H)</td>
+<td>60</td>
+<td>1,3</td>
+<td>20</td>
+<td>+3</td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Sátiro (S)</td>
+<td>30</td>
+<td>2,3</td>
+<td>15</td>
+<td>+2</td>
+<td>1</td>
+<td>Rápido e frágil</td>
+</tr>
+<tr>
+<td>Minotauro (M)</td>
+<td>170</td>
+<td>0,8</td>
+<td>45</td>
+<td>+6</td>
+<td>2</td>
+<td>Quebra estruturas (25 de dano/s)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>O <strong>Minotauro</strong> calcula a rota considerando atravessar estruturas: quanto mais vida a peça tem, mais "longo" fica passar por ela. Ele pode tanto dar a volta quanto abrir caminho na marra. Quando uma peça cai, todas as unidades recalculam a rota.</li>
+<li>As unidades <strong>inimigas</strong> ganham vida a cada onda, de acordo com a dificuldade (ver abaixo).</li>
+</ul>
+<hr />
+<h2>Habilidades (Herói Aquiles + Patrono Zeus)</h2>
+<p>Três botões, cada um abre um <strong>leque</strong> com no máximo 3 opções. Segure o botão e arraste até a opção, ou toque para abrir e toque na opção.</p>
+<p>O <strong>selo</strong> em cada botão mostra quantas habilidades estão prontas. A cor vai do vermelho (recém-usada) ao verde (pronta), e o anel enche conforme a recarga avança.</p>
+<table>
+<thead>
+<tr>
+<th>Botão</th>
+<th>Habilidade</th>
+<th>Recarga</th>
+<th>Efeito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Comandos</td>
+<td>Investida</td>
+<td>10 s</td>
+<td>Suas unidades ficam 70% mais rápidas por 4 s</td>
+</tr>
+<tr>
+<td>Comandos</td>
+<td>Reagrupar</td>
+<td>14 s</td>
+<td>Cura 40% da vida máxima das suas unidades</td>
+</tr>
+<tr>
+<td>Comandos</td>
+<td>Focar torre</td>
+<td>15 s</td>
+<td>Atordoa por 4 s as 2 torres inimigas mais próximas da sua unidade da frente</td>
+</tr>
+<tr>
+<td>Divino</td>
+<td>Raio</td>
+<td>18 s</td>
+<td>35 de dano em todos os invasores do <strong>seu</strong> labirinto</td>
+</tr>
+<tr>
+<td>Divino</td>
+<td>Bênção</td>
+<td>30 s</td>
+<td>Suas unidades ficam imunes por 3 s</td>
+</tr>
+<tr>
+<td>Heroico</td>
+<td>Golpe show</td>
+<td>12 s</td>
+<td>60 de dano na torre inimiga mais próxima da sua unidade da frente; <strong>+20 Aclamação</strong></td>
+</tr>
+<tr>
+<td>Heroico</td>
+<td>Grito</td>
+<td>16 s</td>
+<td>Torres inimigas atiram na metade da velocidade por 5 s; <strong>+5 Aclamação</strong></td>
+</tr>
+</tbody>
+</table>
+<p>As habilidades de show (Golpe show e Grito) pagam Aclamação: a plateia gosta de espetáculo.</p>
+<hr />
+<h2>Economia: Aclamação</h2>
+<p>A <strong>Aclamação</strong> é o único recurso. Ela paga torres, muralhas e unidades de ataque.</p>
+<p><strong>Ganho no fim de cada onda:</strong></p>
+<pre><code>ganho = base + renda + juros
+juros = 10% da Aclamação guardada (o cálculo para em 300 guardados)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Fonte</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base</td>
+<td>depende da dificuldade (30 a 45)</td>
+</tr>
+<tr>
+<td>Renda</td>
+<td>soma acumulada de todas as unidades que você já enviou (permanente)</td>
+</tr>
+<tr>
+<td>Juros</td>
+<td>até +30 por onda</td>
+</tr>
+<tr>
+<td>Invasor derrotado no seu labirinto</td>
+<td>+2 cada</td>
+</tr>
+<tr>
+<td>Golpe show / Grito</td>
+<td>+20 / +5</td>
+</tr>
+<tr>
+<td>Falta</td>
+<td>−25 por peça quebrada</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A decisão central:</strong> cada unidade enviada custa agora, mas aumenta a renda para sempre. Gastar tudo em torres segura a defesa, mas deixa a economia parada. Guardar rende juros, mas te deixa mais fraco na onda seguinte.</p>
+<p><em>Exemplo de rodada: "Tô com 120. Mando dois Hoplitas (−40), minha renda sobe +6 pra sempre. Sobram 80: boto uma torre na curva e guardo 40 pros juros. Na volta entram 38 de base, +renda, +4 de juros... dá pra respirar."</em></p>
+<hr />
+<h2>Dificuldades do NPC</h2>
+<p>Escolha antes da primeira onda.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Aprendiz</th>
+<th>Campeão</th>
+<th>Lenda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aclamação inicial</td>
+<td>220</td>
+<td>190</td>
+<td>160</td>
+</tr>
+<tr>
+<td>Base por onda</td>
+<td>45</td>
+<td>38</td>
+<td>30</td>
+</tr>
+<tr>
+<td>Vida extra dos invasores por onda</td>
+<td>0%</td>
+<td>+5%</td>
+<td>+10%</td>
+</tr>
+<tr>
+<td>Hoplitas na onda <em>n</em></td>
+<td>2 + 0,75·<em>n</em></td>
+<td>3 + <em>n</em></td>
+<td>3 + 1,5·<em>n</em></td>
+</tr>
+<tr>
+<td>Sátiros na onda <em>n</em></td>
+<td>2 a cada 3 ondas</td>
+<td>2 a cada 2 ondas</td>
+<td>2 a cada 2 ondas</td>
+</tr>
+<tr>
+<td>Minotauros</td>
+<td><em>n</em>/3 nas ondas múltiplas de 3</td>
+<td>idem</td>
+<td>idem, mais <em>n</em> − 4 a partir da onda 5</td>
+</tr>
+<tr>
+<td>Defesa do NPC melhora</td>
+<td>a cada 3 ondas</td>
+<td>a cada 2 ondas</td>
+<td>toda onda</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Defesa do NPC:</strong> começa com um labirinto em serpentina e 4 torres. A cada melhoria, um muro vira torre. Quando a melhoria cai numa onda múltipla de 4, um muro também vira muralha reforçada (ondas 4, 8, 12… no Lenda; 4, 8… no Campeão; 12, 24… no Aprendiz).</p>
+<p><strong>Calibração (bots automáticos que misturam ataque e defesa):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Uso de habilidades</th>
+<th>Aprendiz</th>
+<th>Campeão</th>
+<th>Lenda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Perfeito</td>
+<td>vence (onda 7)</td>
+<td>vence (onda 6)</td>
+<td>vence (onda 7)</td>
+</tr>
+<tr>
+<td>A cada 10 s</td>
+<td>vence (onda 8)</td>
+<td>vence (onda 8)</td>
+<td>perde (onda 8)</td>
+</tr>
+<tr>
+<td>Nunca</td>
+<td>vence (onda 15)</td>
+<td>perde (onda 8)</td>
+<td>perde (onda 6)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>O que ainda não está no protótipo</h2>
+<ul>
+<li>Montagem do deck por peso (hoje as unidades e estruturas são fixas).</li>
+<li>Escolha de herói e de deus patrono (hoje é sempre Aquiles + Zeus).</li>
+<li>Trapaças dos patronos trapaceiros e o medidor de Suspeita.</li>
+<li>Ranking de favoritismo (favorito × azarão).</li>
+<li>Arenas com regras próprias.</li>
+<li>PvP (planejado para a v2, de forma assíncrona).</li>
+</ul>
+<h2>Feedback</h2>
+<p>Ao testar, observe principalmente:</p>
+<ol>
+<li>Segurar e arrastar funciona bem no celular durante a onda?</li>
+<li>A mini-janela basta para cuidar da defesa, ou você fica trocando de câmera?</li>
+<li>As habilidades pesam demais no resultado?</li>
+<li>Em quantas ondas a partida fica boa? Muito curta, muito longa?</li>
+</ol>
+</aside>
 </div>
 
 <script>
